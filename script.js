@@ -90,3 +90,11 @@ fetch_api('status/exploits')
         });
     })
     .catch(error => console.error('Error fetching exploit statuses:', error));
+
+fetch_api('versions/android')
+    .then(data => {
+        const container = document.getElementById('android-version');
+        container.innerHTML = '';
+        container.appendChild(createCard('Android', `Version: ${data.Android}<br>Date: ${data.AndroidDate}`, { version: data.Android }));
+    })
+    .catch(error => console.error('Error fetching Android version:', error));
