@@ -1,3 +1,12 @@
+window.onscroll = function () {
+    var navbar = document.querySelector(".navbar");
+    if (window.scrollY > 50) {
+        navbar.classList.add("scrolled");
+    } else {
+        navbar.classList.remove("scrolled");
+    }
+};
+
 const fetch_api = (route) => {
     return fetch(`https://weao-proxy-api.vercel.app/api/${route}`)
         .then(response => response.json());
@@ -16,19 +25,20 @@ const getPlatformIcon = (platform) => {
     }
 };
 
-const getFreeIcon = (isFree) => {
+const FreeIcon = (isFree) => {
     return isFree;
 };
 
-const getDetectedIcon = (isDetected) => {
+const DetectedIcon = (isDetected) => {
     return isDetected ? '<i class="fas fa-exclamation-triangle status-icon"></i>' : '<i class="fas fa-shield-alt status-icon"></i>';
 };
 
-const createCard = (title, details, extra) => {
+const Cards = (title, details, extra) => {
+    const platformIcon = getPlatformIcon(title);
     const card = document.createElement('div');
     card.className = 'version-card';
     card.innerHTML = `
-        <h3>${title}</h3>
+        <h3>${platformIcon} ${title}</h3>
         <p>${details}</p>
         <div class="details">
             <span>Version:</span> <span>${extra.version}</span>
@@ -37,12 +47,13 @@ const createCard = (title, details, extra) => {
     return card;
 };
 
+
 const Card = (exploit) => {
     const card = document.createElement('div');
     card.className = exploit.updateStatus ? 'exploit-card status-updated' : 'exploit-card status-not-updated';
     const platformIcon = getPlatformIcon(exploit.platform);
-    const freeIcon = getFreeIcon(exploit.free);
-    const detectedIcon = getDetectedIcon(exploit.detected);
+    const Icons = FreeIcon(exploit.free);
+    const detectedIcon = DetectedIcon(exploit.detected);
     card.innerHTML = `
         <h3>${exploit.title}</h3>
         <p><strong>Version:</strong> ${exploit.version}</p>
@@ -67,8 +78,8 @@ fetch_api('versions/current')
     .then(data => {
         const container = document.getElementById('current-versions');
         container.innerHTML = '';
-        container.appendChild(createCard('Windows', `Version: ${data.Windows}<br>Date: ${data.WindowsDate}`, { version: data.Windows }));
-        container.appendChild(createCard('Mac', `Version: ${data.Mac}<br>Date: ${data.MacDate}`, { version: data.Mac }));
+        container.appendChild(Cards('Windows', `Version: ${data.Windows}<br>Date: ${data.WindowsDate}`, { version: data.Windows }));
+        container.appendChild(Cards('Mac', `Version: ${data.Mac}<br>Date: ${data.MacDate}`, { version: data.Mac }));
     })
     .catch(error => console.error('Error fetching current versions:', error));
 
@@ -76,8 +87,8 @@ fetch_api('versions/future')
     .then(data => {
         const container = document.getElementById('future-versions');
         container.innerHTML = '';
-        container.appendChild(createCard('Windows', `Version: ${data.Windows}<br>Date: ${data.WindowsDate}`, { version: data.Windows }));
-        container.appendChild(createCard('Mac', `Version: ${data.Mac}<br>Date: ${data.MacDate}`, { version: data.Mac }));
+        container.appendChild(Cards('Windows', `Version: ${data.Windows}<br>Date: ${data.WindowsDate}`, { version: data.Windows }));
+        container.appendChild(Cards('Mac', `Version: ${data.Mac}<br>Date: ${data.MacDate}`, { version: data.Mac }));
     })
     .catch(error => console.error('Error fetching future versions:', error));
 
@@ -95,6 +106,6 @@ fetch_api('versions/android')
     .then(data => {
         const container = document.getElementById('android-version');
         container.innerHTML = '';
-        container.appendChild(createCard('Android', `Version: ${data.Android}<br>Date: ${data.AndroidDate}`, { version: data.Android }));
+        container.appendChild(Cards('Android', `Version: ${data.Android}<br>Date: ${data.AndroidDate}`, { version: data.Android }));
     })
     .catch(error => console.error('Error fetching Android version:', error));
